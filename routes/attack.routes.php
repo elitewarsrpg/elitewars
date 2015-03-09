@@ -1,19 +1,17 @@
 <?php
 
 /**
- * Attack script - Loop through, creating an array for the attack to be json_encoded, and used in the attack animation.
- * Developed by gratefulDeadty
- * @copy elitewars rpg.
- * 
+ * Attack script - Loop through, creating an array for the attack to be json_encoded for use in the attack animation.
  * TODO: 
  * - Turn this into a function.
- * - Add critical hit, misses, blocks and elemental damages.
- * - Keep this to one script, to allow it to configure PVP, PVM and crew raiding, to help optimize.
+ * - Add elemental damages.
+ * - Keep this to one script, to allow it to configure PVP and PVM.
  */
 
 // The actual attack.
 $app->get('/attack', $isLoggedIn(), function() use ($app) {
     
+    // Example array of attacker.
     $attacker = array(
         'username' => 'attacker',
         'attack' => 10,
@@ -22,6 +20,7 @@ $app->get('/attack', $isLoggedIn(), function() use ($app) {
         'critical' => 5
         );
     
+    // Example array of defender.
     $defender = array(
         'username' => 'defender',
         'attack' => 10,
@@ -35,7 +34,6 @@ $app->get('/attack', $isLoggedIn(), function() use ($app) {
         
 
     $attackArr = array();
-    
     $winner = 0;
     while (!$winner) 
     {
@@ -45,7 +43,6 @@ $app->get('/attack', $isLoggedIn(), function() use ($app) {
             
             // TODO: Ternary ops are great and all -
             // but to keep everything more organized and readable maybe if/else will be a better solution?
-            // atleast for inside the attackArr array.
 
             $playerAttack = 0; // Default to 0 - incase it gets confused :o
 
@@ -111,10 +108,10 @@ $app->get('/attack', $isLoggedIn(), function() use ($app) {
             break;
         }
         
-        $turn = 'player'; // Re-loop, to the players turn.
+        $turn = 'player'; // Re-loop, noones dead, it's the players turn again.
     }
     
-    // Render the attack page, with data.
+    // Render the attack page, with the data.
     $app->render('attack.twig', array(
         'attackArr' => $attackArr, 
         'playerArr' => $attacker,
