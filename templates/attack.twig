@@ -1,0 +1,212 @@
+{% include '/includes/header.twig' %}
+
+<style>
+
+/**
+ * Attack styles.
+ */
+.player-combat {
+    float: right;
+    text-align: center;
+    margin-bottom: -10px;
+}
+
+.target-combat {
+    float: left;
+    margin-bottom: -10px;
+}
+
+.target-combat {
+    min-width: 250px;
+}
+
+.player-combat {
+    min-width: 250px;
+}
+
+</style>
+
+    <div class="content">
+    
+    <!-- begin attack -->
+    <div align="center">
+    <table border=0 cellpadding="0" cellspacing="0" width="650" align="center">
+    <tr><td height="10" colspan="3"></td></tr>
+	<tr>
+		<td align="center" colspan="3">Attack Results</td>
+	</tr>
+	<tr>
+		<td valign="top" align="center">
+			<table border=0 cellpadding="0" cellspacing="0" width="450">
+				<tr>
+					<td align="center" width="200">
+                        <font size=3><b>{{ playerArr.username }}</b></font>
+                    </td>
+                    <td align="center" width="50">
+                        <font size=3>&nbsp;vs.&nbsp;</font>
+                    </td>
+                    <td align="center" width="200">
+                        <font size=3><b>{{ targetArr.username }}</b></font>
+                    </td>
+                </tr>
+				<tr>
+					<td background="" width="200" height="200" align="center" style="border-style:solid; border-width:1px; border-color:000000" bordercolor="#000000">
+                        <div id="side_0" style="position: relative;"></div>
+                    </td>
+                    <td width="50">&nbsp;</td>
+                    <td background="" width="200" height="200" align="center" style="border-style:solid; border-width:1px; border-color:000000" bordercolor="#000000">
+                        <div id="side_1" style="position: relative;"></div>
+                    </td>
+				</tr>
+				<tr>
+					<td><div id="current_hp_0">{{ playerArr.start_hp }} / {{ playerArr.start_hp }}</div></td>
+					<td>&nbsp;</td>
+					<td><div id="current_hp_1">{{ targetArr.start_hp }} / {{ targetArr.start_hp }}</div></td>
+				</tr>
+                <!--
+				<tr>
+					<td class="player-buffs"></td>
+					<td>&nbsp;</td>
+					<td></td>
+				</tr>
+                -->
+				<tr>
+					<td>
+                        <table cellpadding="0" cellspacing="0" width="200" height="0">
+                            <tr>
+                                <td align="left">
+                                    <img name="hp_0" id="hp_0" src="http://cdn.fallensword.com/combat/health.gif" height="9" width="175">
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+					<td>&nbsp;</td>
+					<td>
+                        <table cellpadding="0" cellspacing="0" width="200">
+                            <tr>
+                                <td align="right">
+                                    <img name="hp_1" id="hp_1" src="http://cdn.fallensword.com/combat/health.gif" height="9" width="175">
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+				</tr>
+			</table>
+			<table border=0 cellpadding="0" cellspacing="0" width="450">
+				<tr><td height="10" colspan="3"></td></tr>
+				
+				<tr>
+					<td colspan="3" align="center"><div id="reportDiv" style="position:relative;"></div></td>
+				</tr>
+				<tr><td height="10" colspan="3"></td></tr>
+				
+				
+			</table>
+		</td>
+	</tr>
+</table>
+    </div>
+    </div>
+
+<script>
+
+// Variables/Arrays
+var playerArray = {{ playerArr|json_encode(constant('JSON_PRETTY_PRINT')) | raw }}
+var targetArray = {{ targetArr|json_encode(constant('JSON_PRETTY_PRINT')) | raw }}
+var resultArray = {{ attackArr|json_encode(constant('JSON_PRETTY_PRINT')) | raw }}
+var winner = {{ winner }}
+var x = 0;
+
+reportDiv = document.getElementById('reportDiv');
+
+// Creates the attack. 
+// Basically this is just looped until a winner is found.
+function displayAttack() {
+
+    // Did someone win? Lets display the results.
+    if (resultArray[x]['turn'] == '' && resultArray[x]['type'] == 'win')
+    {
+        self.setTimeout('displayResult()', 800);
+    }
+    else 
+    {
+        // Set the turn to bool.
+        var side = (resultArray[x]['turn'] == 'player') ? 0 : 1;
+        
+        // The side not attacking, does nothing.
+        document.getElementById("side_"+(1-side)).innerHTML = '';
+    
+        // Configure the inner content. (displays the total attack as of now.)
+        innerContent = '&nbsp;';
+        innerContent = '<span style="color:#000000;font-weight:bold;">'+resultArray[x]['attack']+'</span>';
+        		     
+        // Configure current hp.
+        currentHP = (resultArray[x]['turn'] == 'player') ? resultArray[x]['player_hp'] : resultArray[x]['target_hp'];        
+        
+        //currentHP = (currentHP < 0) ? 0 : currentHP;
+            
+        // Configure start hp.
+        startHP = (resultArray[x]['turn'] == 'player') ? playerArray['start_hp'] : targetArray['start_hp'];
+            
+        // Configure heath-bar.
+        document.getElementById("hp_"+side).width = 175 * ((currentHP / startHP));
+    	document.getElementById("current_hp_"+side).innerHTML = currentHP+"&nbsp;/&nbsp;"+startHP;
+        document.getElementById("side_"+side).innerHTML = '<div style="padding-top: 80px;">'+innerContent+'</div>';
+    	
+        // Configure the layout - left side player, right side target.
+        // <div class="'+resultArray[x]['turn']+'-combat"> was not being friendly, so stick to this long way.
+        if (side == 1)
+            document.getElementById("reportDiv").innerHTML += '<div class="player-combat">'+resultArray[x]['message']+'</div><div style="clear:both"></div><br />';
+        else
+    		document.getElementById("reportDiv").innerHTML += '<div class="target-combat">'+resultArray[x]['message']+'</div><div style="clear:both"></div><br />';
+        
+        ++x; // Increment
+        
+        // Loop until we find that winner!
+        if (x < resultArray.length)
+            self.setTimeout('displayAttack()', 800);
+    }
+}
+
+
+
+// Displays a victory/defeat images after a winner is found.
+function displayResult()
+{
+
+    document.getElementById("hp_0").width = 198 * ((resultArray[x]['player_hp'] / playerArray['start_hp']));
+	document.getElementById("current_hp_0").innerHTML = resultArray[x]['player_hp']+"&nbsp;/&nbsp;"+playerArray['start_hp'];
+    
+	document.getElementById("hp_1").width = 198 * ((resultArray[x]['target_hp'] / targetArray['start_hp']));
+	document.getElementById("current_hp_1").innerHTML = resultArray[x]['target_hp']+"&nbsp;/&nbsp;"+targetArray['start_hp'];
+
+	document.getElementById("side_"+(1-winner)).innerHTML = '<div style="padding-top:50px;"><img src="http://cdn.fallensword.com/combat/defeat.gif"></div>'; // other side
+	document.getElementById("side_"+winner).innerHTML = '<div style="padding-top:50px;"><img src="http://cdn.fallensword.com/combat/victory.gif"></div>';
+
+	document.getElementById("reportDiv").innerHTML += '<hr><font color="#006666"><b>'+resultArray[x]['message']+'</b>';
+	
+    // Show the winning results if the player attacking has won.
+    if (winner === 0)
+	    self.setTimeout('displayWin()', 800);
+}
+
+// Display all winnings here, ie: loot, items, ect.
+function displayWin() {
+    
+    // Example:
+    reportDiv = document.getElementById('reportDiv'); // this should be defined way earlier. (todo)
+    reportDiv.innerHTML += '<br /><br />';
+    var gold = 100;
+    if (gold > 0) {
+        reportDiv.innerHTML += 'You gain '+gold+' gold!';
+    }
+
+}
+
+// Starts the animation.
+self.setTimeout('displayAttack()', 400);
+
+</script>
+
+
+{% include '/includes/footer.twig' %}
