@@ -1,8 +1,10 @@
 <?php
 
-// TODO: Create a bootstrap for this page. Also create a config array..
+// TODO:
+// 1. Create a bootstrap, outside of this file.
+// 2. Create a nice config array, that will hold db, secured urls, ect.
 
-// During development.
+// During development only.
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
@@ -26,7 +28,6 @@ $view->parserExtensions = array(
     new \Slim\Views\TwigExtension(),
 );
 
-
 // Require all models
 foreach (glob('models/*.php') as $model) {
     require_once $model;
@@ -35,11 +36,8 @@ foreach (glob('models/*.php') as $model) {
 // Init our session (todo: create middleware for this.)
 Session::init();
 
-// Add an autoloader to the composer file? For the models used.
-// Also, use the dependence injection container, to allow for lazy loading?
-$db = new Database(); // Deprecated, just need redo the models that still use Database\PDO.
+$db = new Database(); // Deprecated, just need to redo the models that still use Database\PDO.
 $auth = new Auth($db); // Soon to be implementing the eloquent orm here, $db will be deprecated.
-
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 
@@ -55,7 +53,7 @@ $settings = array(
     'prefix' => ''
 );
 
-// To extend Illuminate\Database\Eloquent\Models and have access to that class - this is needed.
+// To extend Illuminate\Database\Eloquent\Models and have access to the class - this is needed.
 $capsule = new Capsule;
 $capsule->addConnection($settings);
 $capsule->bootEloquent();
@@ -72,11 +70,9 @@ $app->container->singleton('capsule', function() use ($settings) {
     
 });
 
-
 // Add custom middleware.
 require 'middleware/navigation.php';
 $app->add(new Slim\Middleware\Navigation($auth, $db));
-
 
 // For now, this checks if a user is logged in, and if not redirects to the user page.
 // Middleware will be added for this.
