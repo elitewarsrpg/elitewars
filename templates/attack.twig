@@ -180,8 +180,8 @@ function displayResult()
 	document.getElementById("hp_1").width = 198 * ((resultArray[x]['target_hp'] / targetArray['start_hp']));
 	document.getElementById("current_hp_1").innerHTML = resultArray[x]['target_hp']+"&nbsp;/&nbsp;"+targetArray['start_hp'];
 
-	document.getElementById("side_"+(1-winner)).innerHTML = '<div style="padding-top:50px;"><img src="http://cdn.fallensword.com/combat/defeat.gif"></div>'; // other side
-	document.getElementById("side_"+winner).innerHTML = '<div style="padding-top:50px;"><img src="http://cdn.fallensword.com/combat/victory.gif"></div>';
+	document.getElementById("side_"+(1-winner)).innerHTML = '<div style="padding-top:50px;"><img src="defeat.gif"></div>';
+	document.getElementById("side_"+winner).innerHTML = '<div style="padding-top:50px;"><img src="victory.gif"></div>';
 
 	document.getElementById("reportDiv").innerHTML += '<hr><font color="#006666"><b>'+resultArray[x]['message']+'</b>';
 	
