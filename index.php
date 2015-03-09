@@ -51,9 +51,9 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 $settings = array(
     'driver' => 'mysql',
     'host' => '127.0.0.1',
-    'database' => 'wwwelite_rpg',
-    'username' => 'wwwelite_rpguser',
-    'password' => '+4c%7kf1S6P+',
+    'database' => 'db',
+    'username' => 'user',
+    'password' => 'password',
     'collation' => 'utf8_general_ci',
     'charset' => 'utf8',
     'prefix' => ''
@@ -103,7 +103,6 @@ $isLoggedIn = function() {
 foreach(glob('routes/*.php') as $router) {
     require_once $router;
 }
-
 
 // Run the app.
 $app->run();
