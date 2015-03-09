@@ -6,9 +6,8 @@
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
-require 'vendor/autoload.php';
-require '../vendor/autoload.php';
-
+require 'vendor/autoload.php'; // Loads slim and twig composer files.
+require '../vendor/autoload.php'; // Loads illuminate/database composer files.
 
 $app = new \Slim\Slim(array(
 	'view' => new \Slim\Views\Twig()
@@ -28,8 +27,6 @@ $view->parserExtensions = array(
 );
 
 
-
-
 // Require all models
 foreach (glob('models/*.php') as $model) {
     require_once $model;
@@ -40,12 +37,11 @@ Session::init();
 
 // Add an autoloader to the composer file? For the models used.
 // Also, use the dependence injection container, to allow for lazy loading?
-$db = new Database();
-$auth = new Auth($db);
+$db = new Database(); // Deprecated, just need redo the models that still use Database\PDO.
+$auth = new Auth($db); // Soon to be implementing the eloquent orm here, $db will be deprecated.
 
 
 use Illuminate\Database\Capsule\Manager as Capsule;
-
 
 // Database information.
 $settings = array(
@@ -59,21 +55,17 @@ $settings = array(
     'prefix' => ''
 );
 
-
-// Needed to have access to models for classes.
+// To extend Illuminate\Database\Eloquent\Models and have access to that class - this is needed.
 $capsule = new Capsule;
 $capsule->addConnection($settings);
 $capsule->bootEloquent();
-
-
 
 // Bootstrap Eloquent ORM to slim.
 $app->container->singleton('capsule', function() use ($settings) {
     
     $capsule = new Illuminate\Database\Capsule\Manager;
-    $capsule->setFetchMode(PDO::FETCH_OBJ); // This is causing problems.
+    $capsule->setFetchMode(PDO::FETCH_OBJ);
     $capsule->addConnection($settings);
-    $capsule->setAsGlobal();
     $capsule->bootEloquent();
     
     return $capsule->getConnection();
@@ -81,13 +73,13 @@ $app->container->singleton('capsule', function() use ($settings) {
 });
 
 
-
-// Add custom middleware. (include all these files. with foreach(glob('middleware/*.php'))
+// Add custom middleware.
 require 'middleware/navigation.php';
 $app->add(new Slim\Middleware\Navigation($auth, $db));
 
 
-// TODO: Create a middleware extension class for this?
+// For now, this checks if a user is logged in, and if not redirects to the user page.
+// Middleware will be added for this.
 $isLoggedIn = function() {
     return function () {
         $app = \Slim\Slim::getInstance();
@@ -97,7 +89,6 @@ $isLoggedIn = function() {
         }
     };
 };
-
 
 // Require all routes
 foreach(glob('routes/*.php') as $router) {
