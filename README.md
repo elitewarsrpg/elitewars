@@ -20,7 +20,8 @@ Create a composer.json file in the directory where you just installed composer, 
 		  "slim/slim": "2.6.1",
 		  "slim/views": "dev-master",
 		  "slim/extras": "dev-master",
-		  "twig/twig": "1.18.*@dev"
+		  "twig/twig": "1.18.*@dev",
+		  "illuminate/database: "*"
     	}
 }
 ```
