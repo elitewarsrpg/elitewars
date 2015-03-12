@@ -4,19 +4,10 @@
 
 $app->get('/backpack(/)(/:which)(/)(/:action)(/)(/:itemid)', $isLoggedIn(), function($which = '', $action = '', $itemid = '') use ($app) {
 	
-	
 	$userid = Session::get('userid');
 	$which = (!$which) ? 'items' : $which;
 	
-	/*
-	if ($action == 'equip') {		
-		// equip function call.
-	} elseif ($action == 'unequip') {
-		// unequip function call.
-	}
-	*/
-
-
+	// Items in the users backpack, must be un-equipped, un-dropped and un-vaulted.
 	$items = $app->capsule->table('items')
             ->join('useritems', 'items.itemid', '=', 'useritems.itemid')
             ->join('users', 'users.userid', '=', 'useritems.userid')
@@ -65,6 +56,8 @@ $app->get('/backpack(/)(/:which)(/)(/:action)(/)(/:itemid)', $isLoggedIn(), func
 });
 
 
+// Very simple equip action, ajax loads this route.
+// This will get redone, and therefore become deprecated.
 $app->get('/itemactions/equip/:itemid', $isLoggedIn(), function($itemid) use ($app) {
 
 	$userid = Session::get('userid');
@@ -73,25 +66,23 @@ $app->get('/itemactions/equip/:itemid', $isLoggedIn(), function($itemid) use ($a
 		exit;
 	}
 	
-
-	// Equip the item.
+	// Equip the item. (test)
 	$app->capsule->table('useritems')
 		->where('useritemid', $itemid)
 		->where('userid', $userid)
 		->update(['equipped' => 1]);
-	
+		
+	// and it works.
 });	
 	
 	
-	
+// The users equipment. 
+// This route is loaded through createWindow('Equipment', 'eqWin', 314, '100px');
+// TODO: Add orbs, and possible find a less cheap solution.
 $app->get('/equipment', $isLoggedIn(), function() use ($app) {
 	
 	$userid = Session::get('userid');
-	
-	
-	$slots = [
-		'head', 'necklace', 'weapon', 'body', 'shield', 'pants', 'belt', 'ring', 'boots'
-	];
+	$slots = ['head', 'necklace', 'weapon', 'body', 'shield', 'pants', 'belt', 'ring', 'boots'];
 
 	// get the users slot ids.
 	$users = $app->capsule->table('users')
