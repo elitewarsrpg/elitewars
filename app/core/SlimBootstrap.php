@@ -16,8 +16,8 @@ class SlimBootstrap
 	
 	/**
 	 * Constructor
-	 * @instance of Slim $app
-	 * @instance of \Session $session
+	 * @instanceof Slim $app
+	 * @instanceof \Session $session
 	 * @array $config
 	 * @instance of Capsule $capsule
 	 */
