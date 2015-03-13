@@ -8,9 +8,24 @@ use \PDO;
 
 class SlimBootstrap
 {
+	/**
+	 * @var $app
+	 */ 
 	protected $app;
+	
+	/**
+	 * @var $session
+	 */
 	protected $session;
+	
+	/**
+	 * @array $config
+	 */
 	protected $config = [];
+	
+	/**
+	 * @var $capsule
+	 */
 	protected $capsule;
 	
 	
