@@ -50,7 +50,7 @@ class SlimBootstrap
 	}
 	
 	
-	/**
+	/***
 	 * Elitewars RPG view configuration - configured to use Twig.
 	 * @instance of Slim $app
 	 * @array $config
