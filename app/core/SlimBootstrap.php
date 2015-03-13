@@ -16,10 +16,10 @@ class SlimBootstrap
 	
 	/**
 	 * Constructor
-	 * @instance Slim $app
-	 * @instance \Session $session
+	 * @param Slim $app instance
+	 * @param \Session $session instance
 	 * @array $config
-	 * @instance of Capsule $capsule
+	 * @param Capsule $capsule instance
 	 */
 	public function __construct(Slim $app, \Session $session, $config, Capsule $capsule) 
 	{
@@ -50,9 +50,9 @@ class SlimBootstrap
 	}
 	
 	
-	/***
+	/**
 	 * Elitewars RPG view configuration - configured to use Twig.
-	 * @instance of Slim $app
+	 * @param Slim $app instance
 	 * @array $config
 	 * @return void
 	 */
@@ -65,8 +65,8 @@ class SlimBootstrap
 		
 	/**
 	 * Elitewars RPG hook addons (actual hooks created by slim @ codeguy)
-	 * @instance of Slim $app
-	 * @instance of \Session $session
+	 * @param of Slim $app instance
+	 * @param \Session $session instance
 	 * @return $app->redirect() | false
 	 */	
 	public function addHooks(Slim $app, \Session $session)
@@ -92,7 +92,7 @@ class SlimBootstrap
 	
 	/**
 	 * Set the default headers to utf8
-	 * @instance of Slim $app
+	 * @param Slim $app instance
 	 * @return void;
 	 */
     	public function addDefaultHeaders(Slim $app)
@@ -103,7 +103,7 @@ class SlimBootstrap
 	
 	/**
 	 * Elitewars RPG addon middleware (actual middleware created by slim @codeguy)
-	 * instance of Slim $app
+	 * @param Slim $app instance
 	 * @return void
 	 */
 	public function addMiddleware(Slim $app)
@@ -115,8 +115,8 @@ class SlimBootstrap
 	
 	/**
 	 * Elitewars RPG addon containers (actual container created by slim @ codeguy)
-	 * @instance of Slim $app
-	 * @instance of \Session $session
+	 * @param Slim $app instance
+	 * @param \Session $session instance
 	 * @array $config
 	 * @return session|capsule
 	 */
@@ -142,7 +142,7 @@ class SlimBootstrap
 	
 	/**
 	 * Bootstrap Eloquent ORM to access the models.
-	 * @instance of Slim
+	 * @param Slim $app instance
 	 * @array $config
 	 * @return void
 	 */
