@@ -1,95 +1,61 @@
 <?php
 
-// TODO:
-// 1. Create a bootstrap, outside of this file.
-// 2. Create a nice config array, that will hold db, secured urls, ect.
+use Illuminate\Database\Capsule\Manager as Capsule;
+use Elite\Bootstrap\SlimBootstrap;
+use Slim\Slim;
+use Slim\Views\Twig as Twig;
 
-// During development only.
-error_reporting(E_ALL);
-ini_set("display_errors", 1);
+date_default_timezone_set('UTC');
 
-require 'vendor/autoload.php'; // Loads slim and twig composer files.
-require '../vendor/autoload.php'; // Loads illuminate/database composer files.
+error_reporting(E_ALL); // for development only.
+ini_set("display_errors", 1); // for development only
+define('SCRIPT_DEBUG', true);
 
-$app = new \Slim\Slim(array(
-	'view' => new \Slim\Views\Twig()
-	)
-);
+require 'vendor/autoload.php';
+require '../vendor/autoload.php';
 
-// Configure twig options.
-$view = $app->view();
-$view->parserOptions = array(
-    'debug' => true,
-    'cache' => dirname(__FILE__) . '/cache'
-);
+// middleware (TODO: add an autoloader, and place inside /app/middleware)
+require 'middleware/navigation.php';
+require 'middleware/session.php';
 
-// Config twig extensions.
-$view->parserExtensions = array(
-    new \Slim\Views\TwigExtension(),
-);
+// bootstrap
+require 'app/core/EliteBootstrap.php';
 
-// Require all models
+// Require all models (TODO: add autoloader and place inside /app/extras)
 foreach (glob('models/*.php') as $model) {
-    require_once $model;
+        require_once $model;
 }
 
-// Init our session (todo: create middleware for this.)
-Session::init();
+// Eloquent Models (TODO: add to autoloader)
+foreach (glob('app/models/*.php') as $ormmodel) {
+	require $ormmodel;
+}
 
-$db = new Database(); // Deprecated, just need to redo the models that still use Database\PDO.
-$auth = new Auth($db); // Soon to be implementing the eloquent orm here, $db will be deprecated.
+// Config file.
+$config = require 'app/core/global.php';
 
-use Illuminate\Database\Capsule\Manager as Capsule;
+// Config slim|elitewars|twig.
+$app = new Slim($config['slim']);
+$bootstrap = new SlimBootstrap($app, new Session, $config, new Capsule);
+$app = $bootstrap->bootstrap();
 
-// Database information.
-$settings = array(
-    'driver' => 'mysql',
-    'host' => '127.0.0.1',
-    'database' => 'db',
-    'username' => 'user',
-    'password' => 'password',
-    'collation' => 'utf8_general_ci',
-    'charset' => 'utf8',
-    'prefix' => ''
-);
 
-// To extend Illuminate\Database\Eloquent\Models and have access to the class - this is needed.
-$capsule = new Capsule;
-$capsule->addConnection($settings);
-$capsule->bootEloquent();
-
-// Bootstrap Eloquent ORM to slim.
-$app->container->singleton('capsule', function() use ($settings) {
-    
-    $capsule = new Illuminate\Database\Capsule\Manager;
-    $capsule->setFetchMode(PDO::FETCH_OBJ);
-    $capsule->addConnection($settings);
-    $capsule->bootEloquent();
-    
-    return $capsule->getConnection();
-    
-});
-
-// Add custom middleware.
-require 'middleware/navigation.php';
-$app->add(new Slim\Middleware\Navigation($auth, $db));
-
-// For now, this checks if a user is logged in, and if not redirects to the user page.
-// Middleware will be added for this.
+// NOTE: Deprecated.
 $isLoggedIn = function() {
     return function () {
         $app = \Slim\Slim::getInstance();
         Session::init();
-        if (!Session::isLoggedIn()) {
+    	if (!Session::isLoggedIn()) {
             $app->redirect('login');
         }
     };
 };
+
 
 // Require all routes
 foreach(glob('routes/*.php') as $router) {
     require_once $router;
 }
 
-// Run the app.
+// Run the app|game
 $app->run();
