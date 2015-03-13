@@ -3,11 +3,6 @@
 use Slim\Views\Twig as Twig;
 
 
-if (!defined('APPLICATION_PATH')) {
-    define('APPLICATION_PATH', realpath(dirname(__DIR__)));
-}
-
-
 return array(
 
     // Slim config
