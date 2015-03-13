@@ -3,7 +3,9 @@ Elitewars RPG - Open Source Project.
 
 Currently in development, Elitewars is being built over the wonderful <b>Slim Framework</b> using <b>Twig</b> for the templating system and <b>Eloquent ORM</b> for the database.
 
-The purpose of elitewars is to bring back an old school style game <b>vibe</b>. If you would like to contribute, please get in contact with me @ <b>gratefuldeadty@gmail.com</b>
+The purpose of elitewars is to bring back an old school style game <b>vibe</b>. To see progress that's being made, visit www.elitewars.co (not .com it's .co).
+
+If you would like to contribute, please get in contact with me @ <b>gratefuldeadty@gmail.com</b>
 
 #Installation 
 1. get composer: curl -sS https://getcomposer.org/installer | php
