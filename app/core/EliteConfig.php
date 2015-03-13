@@ -25,16 +25,16 @@ return array(
             'debug' => false,
         ),
     ),
-
-    // Database config
+	
+	// Database config
 	'database' => array(
 		'driver' => 'mysql',
-	    'host' => '127.0.0.1',
-	    'database' => '',
+		'host' => '127.0.0.1',
+		'database' => '',
 		'username' => '',
 		'password' => '',
 		'collation' => 'utf8_general_ci',
 		'charset' => 'utf8',
 		'prefix' => ''
-    )
+	)
 );
