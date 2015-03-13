@@ -19,7 +19,7 @@ class SlimBootstrap
 	protected $session;
 	
 	/**
-	 * @array $config
+	 * @var array $config
 	 */
 	protected $config = [];
 	
@@ -33,7 +33,7 @@ class SlimBootstrap
 	 * Constructor
 	 * @param Slim $app instance
 	 * @param \Session $session instance
-	 * @array $config
+	 * @param array $config
 	 * @param Capsule $capsule instance
 	 */
 	public function __construct(Slim $app, \Session $session, $config, Capsule $capsule) 
@@ -68,7 +68,7 @@ class SlimBootstrap
 	/**
 	 * Elitewars RPG view configuration - configured to use Twig.
 	 * @param Slim $app instance
-	 * @array $config
+	 * @param array $config
 	 * @return void
 	 */
 	public function configureView(Slim $app, $config)
@@ -132,7 +132,7 @@ class SlimBootstrap
 	 * Elitewars RPG addon containers (actual container created by slim @ codeguy)
 	 * @param Slim $app instance
 	 * @param \Session $session instance
-	 * @array $config
+	 * @param array $config
 	 * @return session|capsule
 	 */
 	public function addContainer(Slim $app, \Session $session, $config)
@@ -158,7 +158,7 @@ class SlimBootstrap
 	/**
 	 * Bootstrap Eloquent ORM to access the models.
 	 * @param Slim $app instance
-	 * @array $config
+	 * @param array $config
 	 * @return void
 	 */
 	public function addEloquent(Slim $app, $config) 
